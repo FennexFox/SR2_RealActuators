@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: -1366777262, guid: c37b925f2b4978342b2e0b83a8fa404a, type: 3}
   m_Name: ModData
   m_EditorClassIdentifier: 
-  _assemblies: []
+  _assemblies:
+  - RealActuators.dll
   _author: AnotherFireFox
   _description: This mod adss an actuator, extends/retracts with given velocity and
     interacts to reaction force.
@@ -29,7 +30,8 @@ MonoBehaviour:
   _versionMajor: 0
   _versionMinor: 1
   _partCategories: []
-  _parts: []
+  _parts:
+  - {fileID: 4900000, guid: 47904fbdbfea9534997dfd913ff19c33, type: 3}
   _partStyleExtensions: []
   _partTextureStyles: []
   _persistentObjects: []

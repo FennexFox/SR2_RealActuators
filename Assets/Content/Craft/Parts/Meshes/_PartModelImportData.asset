@@ -12,4 +12,50 @@ MonoBehaviour:
   m_Script: {fileID: 2135884626, guid: c37b925f2b4978342b2e0b83a8fa404a, type: 3}
   m_Name: _PartModelImportData
   m_EditorClassIdentifier: 
-  _models: []
+  _models:
+  - _id: LinearActuator
+    _meshes:
+    - _id: Barrel
+      _initialized: 1
+      _isCollider: 0
+      _mesh: {fileID: 8108563764783910780, guid: 75dc62c0b58b43c4fb8408887a73336b,
+        type: 3}
+      _submeshMap: 02000000
+      _subpartId: 0
+    - _id: Base
+      _initialized: 1
+      _isCollider: 0
+      _mesh: {fileID: 3909233067320746374, guid: 75dc62c0b58b43c4fb8408887a73336b,
+        type: 3}
+      _submeshMap: 02000000
+      _subpartId: 0
+    - _id: Extender
+      _initialized: 1
+      _isCollider: 0
+      _mesh: {fileID: -862308465074972207, guid: 75dc62c0b58b43c4fb8408887a73336b,
+        type: 3}
+      _submeshMap: 00000000
+      _subpartId: 0
+    - _id: Motor
+      _initialized: 1
+      _isCollider: 0
+      _mesh: {fileID: 5041565236075717657, guid: 75dc62c0b58b43c4fb8408887a73336b,
+        type: 3}
+      _submeshMap: 02000000
+      _subpartId: 0
+    - _id: AttachmentScrews
+      _initialized: 1
+      _isCollider: 0
+      _mesh: {fileID: 5383096452462417378, guid: 75dc62c0b58b43c4fb8408887a73336b,
+        type: 3}
+      _submeshMap: 01000000
+      _subpartId: 0
+    - _id: AttachmentPlate
+      _initialized: 1
+      _isCollider: 0
+      _mesh: {fileID: -9156207304718055622, guid: 75dc62c0b58b43c4fb8408887a73336b,
+        type: 3}
+      _submeshMap: 02000000
+      _subpartId: 0
+    _model: {fileID: -927199367670048503, guid: 75dc62c0b58b43c4fb8408887a73336b,
+      type: 3}
