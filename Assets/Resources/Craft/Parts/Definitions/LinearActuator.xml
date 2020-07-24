@@ -7,8 +7,8 @@
       <InputController activationGroup="0" currentValue="0" ignorePartActivationState="false" input="Slider1" invert="false" invertOnMirror="false" invertType="Axis" max="1" min="-1" outputCurveOffset="0" showActivationGroup="false" showInputAxis="true" showInvert="true" type="Standard" zeroOnDeactivate="true" inputId="Velocity" inspectorEnabled="true" partPropertiesEnabled="true" staticPriceAndMass="false" />
     </Modifiers>
     <AttachPoints>
-      <AttachPoint name="AttachPoint1" displayName="BodyJoint" position="0,0,0" rotation="270,0,0" allowRotation="false" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" />
-      <AttachPoint name="AttachPoint2" displayName="ExtenderJoint" position="0,0.5,0" rotation="90,0,0" allowRotation="false" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" />
+      <AttachPoint name="AttachPoint1" displayName="BodyJoint" position="0,0,0" rotation="90,0,0" allowRotation="false" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" />
+      <AttachPoint name="AttachPoint2" displayName="ExtenderJoint" position="0,0.5,0" rotation="270,0,0" allowRotation="false" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" />
     </AttachPoints>
     <SubpartTypes>
       <SubpartType index="0" xmlName="" displayName="Part" />
