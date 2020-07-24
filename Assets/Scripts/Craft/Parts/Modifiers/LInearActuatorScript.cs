@@ -18,11 +18,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
         private bool _updatePistonShaft;
 
-        private AudioSource _audio;
-
         private IBodyJoint _bodyJoint;
-
-        private Transform _expectedJointPosition;
 
         private bool _initializationComplete;
 
@@ -36,18 +32,11 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         private Transform Extender2;
         private Transform Extender3;
 
-        private bool _moving;
-
-        private float _pitch;
-
-        private float _volume;
-
         void IDesignerUpdate.DesignerUpdate(in DesignerFrameData frame)
         {
             if (_initializationComplete)
             {
-                float currentPosition = 0f;
-                base.Data.CurrentPosition = currentPosition;
+                base.Data.CurrentPosition = 0f;
                 UpdateShaftExtension();
             }
         }
@@ -57,7 +46,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             if (!_initializationComplete) { return; }
             if (base.PartScript.CommandPod == null || _input == null) { return; }
 
-            Data.CurrentPosition = _joint.transform.localPosition.x - 0.5f;
+            Data.CurrentPosition = _joint.transform.localPosition.x;
 
             if (_joint != null && !_bodyJoint.PartConnection.IsDestroyed)
             {
@@ -75,14 +64,13 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                 Data.CurrentPosition = nextLength;
             }
 
-            Vector3 targetposition = new Vector3(Data.CurrentPosition + 0.5f, 0f, 0f);
+            Vector3 targetposition = new Vector3(Data.CurrentPosition, 0f, 0f);
             _joint.targetPosition = targetposition;
             if (_updatePistonShaft) { UpdateShaftExtension(); }
         }
 
         void IFlightStart.FlightStart(in FlightFrameData frame)
         {
-            _audio = base.PartScript.GameObject.GetComponent<AudioSource>();
             _input = GetInputController("Velocity");
             FindAndSetupConnectionJoint();
             _initializationComplete = true;
@@ -91,27 +79,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
         void IFlightUpdate.FlightUpdate(in FlightFrameData frame)
         {
-            if (!_initializationComplete)
-            {
-                return;
-            }
-            if (!(_audio != null))
-            {
-                return;
-            }
-            if (_moving)
-            {
-                if (!_audio.isPlaying)
-                {
-                    _audio.Play();
-                }
-                _audio.pitch = _pitch;
-                _audio.volume = _volume;
-            }
-            else if (_audio.isPlaying)
-            {
-                _audio.Stop();
-            }
         }
 
         public override void OnCraftStructureChanged(ICraftScript craftScript)
