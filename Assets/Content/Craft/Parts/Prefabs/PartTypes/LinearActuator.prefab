@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3205878863039140459}
   - component: {fileID: 5483812395493261056}
   - component: {fileID: 8678914728105837913}
+  - component: {fileID: 65223732490126809}
+  - component: {fileID: 4863546897871506770}
   m_Layer: 0
   m_Name: LinearActuator
   m_TagString: Untagged
@@ -137,3 +139,71 @@ MonoBehaviour:
     _stageActivationType: 0
     _supportsActivation: 0
     _thermalMassRatio: 1
+--- !u!114 &65223732490126809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182344098129999405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c8a10feac4ecf4c93e121b0795c0cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data:
+    _id: 
+    _inputId: 
+    _inspectorEnabled: 1
+    _partPropertiesEnabled: 1
+    _staticPriceAndMass: 0
+    _currentPosition: 0
+    _length: 0.5
+    _force: 0.5
+    _acceleration: 0.5
+    _velocity: 0.5
+--- !u!114 &4863546897871506770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182344098129999405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1938718678, guid: 55a7c5278766598448d9083b0de0861d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data:
+    _id: 
+    _inputId: Velocity
+    _inspectorEnabled: 1
+    _partPropertiesEnabled: 1
+    _staticPriceAndMass: 0
+    _activationGroup: 0
+    _currentValue: 0
+    _designerInputOptions: 
+    _ignorePartActivationState: 0
+    _input: Slider1
+    _inputAxisRange:
+      _maxValue: 0
+      _minValue: 0
+      _zeroValue: 0
+    _inputAxisRangeDesigner: 
+    _invert: 0
+    _invertOnMirror: 0
+    _invertType: 0
+    _max: 1
+    _min: -1
+    _outputCurveAmplitude: 1
+    _outputCurveFrequency: 1
+    _outputCurveKeyframes: 
+    _outputCurveOffset: 0
+    _outputCurveStyle: 4
+    _outputCurveWrapMode: 8
+    _overrideInput: 
+    _showActivationGroup: 0
+    _showInputAxis: 1
+    _showInvert: 1
+    _type: 0
+    _zeroOnDeactivate: 1
