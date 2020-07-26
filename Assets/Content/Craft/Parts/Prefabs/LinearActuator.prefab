@@ -373,14 +373,14 @@ MonoBehaviour:
     _displayName: ExtenderJoint
     _fuelLine: 0
     _ignoreSurfaces: 0
-    _jointType: 0
+    _jointType: 2
     _localJointAxis: {x: 0, y: 0, z: 1}
     _radius: 0
     _rayCastFromCursor: 0
-    _requiresPhysicsJoint: 0
+    _requiresPhysicsJoint: 1
     _surfaceCollider: {fileID: 0}
     _surfaceColliderName: 
-    _tag: 
+    _tag: Top
 --- !u!1 &4032508340576727679
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,7 +520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data:
     _allowInvertedConnection: 0
-    _allowRotation: 0
+    _allowRotation: 1
     _canReceive: 1
     _canSeek: 1
     _connectionType: 1
@@ -535,7 +535,7 @@ MonoBehaviour:
     _requiresPhysicsJoint: 0
     _surfaceCollider: {fileID: 0}
     _surfaceColliderName: 
-    _tag: 
+    _tag: Bottom
 --- !u!1 &4570644802945920055
 GameObject:
   m_ObjectHideFlags: 0

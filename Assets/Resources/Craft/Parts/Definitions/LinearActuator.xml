@@ -3,12 +3,12 @@
   <PartType id="LinearActuator" includeInBodyDrag="true" name="LinearActuator" prefabPath="Assets/Resources/Craft/Parts/Prefabs/LinearActuator.prefab" mass="0" price="0" partCollisions="Default" defaultMaterials="0,1,4,3,4" subpartsSharePartStyle="false" stylesShareHeader="false">
     <Modifiers>
       <Config autoActivateIfNoStageOrActivationGroup="true" buoyancyBaseScale="1" buoyancyUserScale="1" centerOfMass="0,0,0" collisionDisconnectImpulse="1000" collisionDisconnectVelocity="15" collisionExplodeImpulse="2000" collisionExplodeVelocity="30" collisionPreventExternalDisconnections="false" collisionVelocityMode="NormalOnly" dragScale="1" fuelLine="false" heatShield="0" includeInDrag="true" inertiaTensorBaseScale="1" inertiaTensorMin="0.05" inertiaTensorUserScale="1" massScale="1" maxDamage="100" maxTemperature="1500" partCollisionHandling="Default" partCollisionResponse="Default" partScale="1,1,1" preventDebris="false" raiseWaterEventsEvenIfNotBuoyant="false" stageActivationType="None" supportsActivation="false" thermalMassRatio="1" inspectorEnabled="true" partPropertiesEnabled="true" staticPriceAndMass="false" />
-      <RealActuators.LInearActuator currentPosition="0" length="0.5" force="0.5" acceleration="0.5" velocity="0.5" inspectorEnabled="true" partPropertiesEnabled="true" staticPriceAndMass="false" />
+      <RealActuators.LinearActuator currentPosition="0" length="0.5" force="1" acceleration="1" velocity="1" inspectorEnabled="true" partPropertiesEnabled="true" staticPriceAndMass="false" />
       <InputController activationGroup="0" currentValue="0" ignorePartActivationState="false" input="Slider1" invert="false" invertOnMirror="false" invertType="Axis" max="1" min="-1" outputCurveOffset="0" showActivationGroup="false" showInputAxis="true" showInvert="true" type="Standard" zeroOnDeactivate="true" inputId="Velocity" inspectorEnabled="true" partPropertiesEnabled="true" staticPriceAndMass="false" />
     </Modifiers>
     <AttachPoints>
-      <AttachPoint name="AttachPoint1" displayName="BodyJoint" position="0,0,0" rotation="90,0,0" allowRotation="false" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" />
-      <AttachPoint name="AttachPoint2" displayName="ExtenderJoint" position="0,0.5,0" rotation="270,0,0" allowRotation="false" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" />
+      <AttachPoint name="AttachPoint1" tag="Bottom" displayName="BodyJoint" position="0,0,0" rotation="90,0,0" allowRotation="true" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" />
+      <AttachPoint name="AttachPoint2" tag="Top" displayName="ExtenderJoint" position="0,0.5,0" rotation="270,0,0" allowRotation="false" allowInvertedConnection="false" canReceive="true" canSeek="true" ignoreSurfaces="false" jointType="Rigid" requiresPhysicsJoint="true" />
     </AttachPoints>
     <SubpartTypes>
       <SubpartType index="0" xmlName="" displayName="Part" />
@@ -20,7 +20,7 @@
         <Parts>
           <Part id="1" partType="LinearActuator" position="0,0,0" rotation="0,0,0">
             <Config />
-            <RealActuators.LInearActuator />
+            <RealActuators.LinearActuator />
             <InputController />
           </Part>
         </Parts>
