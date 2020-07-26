@@ -21,7 +21,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
         private const float DefaultVelocity = 1f;
 
-        private const float DefaultForce = 1f;
+        private const float DefaultForce = 10f;
 
         private const float Density = 1550f; // ?
 
@@ -31,11 +31,11 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
         [SerializeField]
         [DesignerPropertySlider(0.05f, 1.2f, 24, Label = "Length", Order = 0, PreserveStateMode = PartModifierPropertyStatePreservationMode.SaveAlways, Tooltip = "Changes the length of the extender.")]
-        private float _length = 0.5f;
+        private float _length = 0.4f;
 
         [SerializeField]
-        [DesignerPropertySlider(0.1f, 10f, 100, Label = "Force", Order = 1, Tooltip = "Change the maximum force of the extender.")]
-        private float _force = 1f;
+        [DesignerPropertySlider(10f, 100f, 20, Label = "Force", Order = 1, Tooltip = "Change the maximum force of the extender.")]
+        private float _force = 10f;
 
         [SerializeField]
         [DesignerPropertySlider(1f, 200f, 200, Label = "Acceleration", Order = 1, Tooltip = "Change the acceleration of the extender.")]
@@ -64,11 +64,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             base.Script.UpdateScale();
         }
 */
-        protected override void OnCreated(XElement partModifierXml) 
-        {
-            base.OnCreated(partModifierXml);
-        }
-
         protected override void OnDesignerInitialization(IDesignerPartPropertiesModifierInterface d)
         {
             d.OnValueLabelRequested(() => _length, (float x) => x.ToString("0.00") + "m");
