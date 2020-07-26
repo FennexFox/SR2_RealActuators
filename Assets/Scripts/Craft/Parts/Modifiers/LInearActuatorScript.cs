@@ -12,9 +12,11 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     using System.Collections.Generic;
     using UnityEngine;
 
-    public class LInearActuatorScript : PartModifierScript<LInearActuatorData>, IDesignerUpdate, IGameLoopItem, IFlightStart, IFlightUpdate, IFlightFixedUpdate
+    public class LinearActuatorScript : PartModifierScript<LinearActuatorData>, IDesignerUpdate, IGameLoopItem, IFlightStart, IFlightUpdate, IFlightFixedUpdate
     {
         private float _priorLength;
+
+        private float _lengthOffset;
 
         private bool _updatePistonShaft;
 
@@ -44,28 +46,34 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         void IFlightFixedUpdate.FlightFixedUpdate(in FlightFrameData frame)
         {
             if (!_initializationComplete) { return; }
+
+            Data.CurrentPosition = (ConnectedBodyLocalPosition() - _lengthOffset) - 0.5f;
+            Debug.Log($"{_joint}, {base.PartScript.CommandPod}, {_input}");
+
             if (base.PartScript.CommandPod == null || _input == null) { return; }
 
-            Data.CurrentPosition = _joint.transform.localPosition.x;
-
-            if (_joint != null && !_bodyJoint.PartConnection.IsDestroyed)
+            if (_joint != null)
             {
-                float currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
+                if (_bodyJoint != null && !_bodyJoint.PartConnection.IsDestroyed)
+                {
+                    float currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
 
-                _joint.connectedBody.WakeUp();
-                _jointRigidbody.WakeUp();
+                    _joint.connectedBody.WakeUp();
+                    _jointRigidbody.WakeUp();
 
-                float targetVelocity = Data.Velocity * _input.Value;
-                float nextVelocity = currentVelocity + Data.Acceleration * Time.deltaTime;
-                nextVelocity = Mathf.Clamp(nextVelocity, -1 * Math.Abs(targetVelocity), Math.Abs(targetVelocity));
-                float nextLength = Data.CurrentPosition + nextVelocity * Time.deltaTime;
-                nextLength = Mathf.Clamp(nextLength, 0f, Data.Length);
+                    float targetVelocity = Data.Velocity * _input.Value;
+                    float nextVelocity = currentVelocity + Data.Acceleration * Math.Sign(_input.Value) * Time.deltaTime;
+                    nextVelocity = Mathf.Clamp(nextVelocity, -1 * Math.Abs(targetVelocity), Math.Abs(targetVelocity));
+                    float nextLength = Data.CurrentPosition + nextVelocity * Time.deltaTime;
+                    nextLength = Mathf.Clamp(nextLength, 0f, Data.Length);
 
-                Data.CurrentPosition = nextLength;
+                    _priorLength = Data.CurrentPosition;
+                    Data.CurrentPosition = nextLength;
+                }
+                Vector3 targetposition = new Vector3(Data.CurrentPosition - Data.Length/2, 0f, 0f);
+                _joint.targetPosition = targetposition;
             }
 
-            Vector3 targetposition = new Vector3(Data.CurrentPosition, 0f, 0f);
-            _joint.targetPosition = targetposition;
             if (_updatePistonShaft) { UpdateShaftExtension(); }
         }
 
@@ -73,6 +81,8 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         {
             _input = GetInputController("Velocity");
             FindAndSetupConnectionJoint();
+            _joint.anchor += Vector3.up * Data.Length/2;
+            _lengthOffset = ConnectedBodyOffset();
             _initializationComplete = true;
             UpdateShaftExtension();
         }
@@ -84,9 +94,13 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         public override void OnCraftStructureChanged(ICraftScript craftScript)
         {
             base.OnCraftStructureChanged(craftScript);
-            if (Game.InFlightScene && (_jointRigidbody != base.PartScript.BodyScript.RigidBody || _joint == null))
+            if (Game.InFlightScene)
             {
-                FindAndSetupConnectionJoint();
+                _lengthOffset = ConnectedBodyOffset();
+                if (_jointRigidbody != base.PartScript.BodyScript.RigidBody || _joint == null)
+                {
+                    FindAndSetupConnectionJoint();
+                }
             }
         }
 
@@ -109,12 +123,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
         private void FindAndSetupConnectionJoint()
         {
-            int attachPointIndex = base.Data.AttachPointIndex;
-            if (base.PartScript.Data.AttachPoints.Count <= attachPointIndex)
-            {
-                return;
-            }
-            AttachPoint attachPoint = base.PartScript.Data.AttachPoints[attachPointIndex];
+            AttachPoint attachPoint = base.PartScript.Data.AttachPoints[1];
             if (attachPoint.PartConnections.Count == 1)
             {
                 foreach (IBodyJoint joint in base.PartScript.BodyScript.Joints)
@@ -128,10 +137,10 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                             _bodyJoint = joint;
                             _updatePistonShaft = true;
 
-                            SoftJointLimit _linearlimit = new SoftJointLimit();
-                            _linearlimit.limit = Data.Length;
-                            _linearlimit.bounciness = 0;
-                            _linearlimit.contactDistance = 0.001f;
+                            SoftJointLimit _Linearlimit = new SoftJointLimit();
+                            _Linearlimit.limit = Data.Length/2;
+                            _Linearlimit.bounciness = 0;
+                            _Linearlimit.contactDistance = 0.001f;
 
                             jointForAttachPoint.xMotion = ConfigurableJointMotion.Limited;
                             jointForAttachPoint.yMotion = ConfigurableJointMotion.Locked;
@@ -144,7 +153,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                             jointForAttachPoint.xDrive = jointDrive;
 
                             _joint = jointForAttachPoint;
-                            _joint.linearLimit = _linearlimit;
+                            _joint.linearLimit = _Linearlimit;
                             _jointRigidbody = component;
 
                             break;
@@ -158,11 +167,25 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             }
         }
 
+        private float ConnectedBodyLocalPosition()
+        {
+            Vector3 position = _joint.connectedBody.position;
+            position = this.PartScript.Transform.InverseTransformPoint(position);
+            return position.y;
+        }
+
+        private float ConnectedBodyOffset()
+        {
+            Vector3 position = base.PartScript.Transform.TransformPoint(base.PartScript.Data.AttachPoints[1].Position);
+            position = _joint.connectedBody.transform.InverseTransformPoint(position);
+            return position.magnitude;
+        }
+
         private void UpdateShaftExtension()
         {
             if (_initializationComplete)
             {
-                Vector3 vector = new Vector3(1, 0, 0);
+                Vector3 vector = new Vector3(0, 0, 1);
                 Extender1.localPosition = vector * Data.CurrentPosition;
                 Extender2.localPosition = vector * Math.Max(0f, (Data.CurrentPosition - 0.4f));
                 Extender3.localPosition = vector * Math.Max(0f, (Data.CurrentPosition - 0.8f));

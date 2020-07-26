@@ -137,7 +137,7 @@ MonoBehaviour:
     _preventDebris: 0
     _raiseWaterEventsEvenIfNotBuoyant: 0
     _stageActivationType: 0
-    _supportsActivation: 0
+    _supportsActivation: 1
     _thermalMassRatio: 1
 --- !u!114 &65223732490126809
 MonoBehaviour:

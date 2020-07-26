@@ -203,10 +203,10 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                             _bodyJoint = joint;
                             _updatePistonShaft = true;
 
-                            SoftJointLimit _linearlimit = new SoftJointLimit();
-                            _linearlimit.limit = Data.Length;
-                            _linearlimit.bounciness = 0;
-                            _linearlimit.contactDistance = 0.001f;
+                            SoftJointLimit _Linearlimit = new SoftJointLimit();
+                            _Linearlimit.limit = Data.Length;
+                            _Linearlimit.bounciness = 0;
+                            _Linearlimit.contactDistance = 0.001f;
 
                             jointForAttachPoint.xMotion = ConfigurableJointMotion.Limited;
                             jointForAttachPoint.yMotion = ConfigurableJointMotion.Locked;
@@ -219,7 +219,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                             jointForAttachPoint.xDrive = jointDrive;
 
                             _joint = jointForAttachPoint;
-                            _joint.linearLimit = _linearlimit;
+                            _joint.linearLimit = _Linearlimit;
                             _jointRigidbody = component;
                             break;
                         }

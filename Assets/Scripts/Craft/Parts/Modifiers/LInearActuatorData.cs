@@ -11,15 +11,17 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     using UnityEngine;
 
     [Serializable]
-    [DesignerPartModifier("LInearActuator")]
-    [PartModifierTypeId("RealActuators.LInearActuator")]
-    public class LInearActuatorData : PartModifierData<LInearActuatorScript>
+    [DesignerPartModifier("LinearActuator")]
+    [PartModifierTypeId("RealActuators.LinearActuator")]
+    public class LinearActuatorData : PartModifierData<LinearActuatorScript>
     {
         private const float DefaultLength = 0.4f;
 
-        private const float DefaultAcceleration = 0.5f;
+        private const float DefaultAcceleration = 1f;
 
-        private const float DefaultVelocity = 0.5f;
+        private const float DefaultVelocity = 1f;
+
+        private const float DefaultForce = 1f;
 
         private const float Density = 1550f; // ?
 
@@ -32,18 +34,16 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         private float _length = 0.5f;
 
         [SerializeField]
-        [DesignerPropertySlider(1f, 200f, 200, Label = "Force", Order = 1, Tooltip = "Change the maximum force of the extender.")]
-        private float _force = 0.5f;
+        [DesignerPropertySlider(0.1f, 10f, 100, Label = "Force", Order = 1, Tooltip = "Change the maximum force of the extender.")]
+        private float _force = 1f;
 
         [SerializeField]
         [DesignerPropertySlider(1f, 200f, 200, Label = "Acceleration", Order = 1, Tooltip = "Change the acceleration of the extender.")]
-        private float _acceleration = 0.5f;
+        private float _acceleration = 1f;
 
         [SerializeField]
-        [DesignerPropertySlider(1f, 200f, 200, Label = "Velocity", Order = 1, Tooltip = "Change the operation velocity of the extender.")]
-        private float _velocity = 0.5f;
-
-        public int AttachPointIndex {get; set;}
+        [DesignerPropertySlider(0.01f, 1f, 100, Label = "Velocity", Order = 1, Tooltip = "Change the operation velocity of the extender.")]
+        private float _velocity = 1f;
 
         public float CurrentPosition {get{return _currentPosition;} set{_currentPosition = value;}}
 
@@ -64,10 +64,9 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             base.Script.UpdateScale();
         }
 */
-        protected override void OnCreated(XElement partModifierXml)
+        protected override void OnCreated(XElement partModifierXml) 
         {
             base.OnCreated(partModifierXml);
-            AttachPointIndex = 0;
         }
 
         protected override void OnDesignerInitialization(IDesignerPartPropertiesModifierInterface d)

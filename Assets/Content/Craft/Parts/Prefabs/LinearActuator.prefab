@@ -393,6 +393,7 @@ GameObject:
   - component: {fileID: 5885767411757192288}
   - component: {fileID: 6397328565796021828}
   - component: {fileID: 118584767479361783}
+  - component: {fileID: 6446436599902853916}
   m_Layer: 0
   m_Name: AttachmentPlates
   m_TagString: Untagged
@@ -475,6 +476,23 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -9156207304718055622, guid: 75dc62c0b58b43c4fb8408887a73336b, type: 3}
+--- !u!114 &6446436599902853916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032508340576727679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 212942404, guid: 43320b5f70320504aa4b1543184e13b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _excludeFromDragModel: 0
+  _excludeFromMeshCombine: 1
+  _excludeFromPartMaterials: 0
+  _renderQueue: 0
+  _usesEmissiveOverride: 0
 --- !u!1 &4505186318962953266
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,6 +1015,7 @@ GameObject:
   - component: {fileID: 8175408964821019478}
   - component: {fileID: 8712509641353951654}
   - component: {fileID: 8442836549257778996}
+  - component: {fileID: 3641649170183074734}
   m_Layer: 0
   m_Name: AttachmentScrews
   m_TagString: Untagged
@@ -1079,6 +1098,23 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 5383096452462417378, guid: 75dc62c0b58b43c4fb8408887a73336b, type: 3}
+--- !u!114 &3641649170183074734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828958762120919446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 212942404, guid: 43320b5f70320504aa4b1543184e13b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _excludeFromDragModel: 0
+  _excludeFromMeshCombine: 1
+  _excludeFromPartMaterials: 0
+  _renderQueue: 0
+  _usesEmissiveOverride: 0
 --- !u!1 &8203751709753756914
 GameObject:
   m_ObjectHideFlags: 0
