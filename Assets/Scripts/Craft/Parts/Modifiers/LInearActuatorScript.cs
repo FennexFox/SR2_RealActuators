@@ -12,7 +12,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     using ModApi.Math;
     using ModApi.Ui.Inspector;
     using System;
-    using System.Collections.Generic;
     using UnityEngine;
 
     public class LinearActuatorScript : PartModifierScript<LinearActuatorData>, IDesignerUpdate, IGameLoopItem, IFlightStart, IFlightUpdate, IFlightFixedUpdate
@@ -63,10 +62,10 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             Data.CurrentPosition = (ConnectedBodyLocalPosition() - _lengthOffset) - 0.5f;
             _currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
             _currentAcceleration = (_currentVelocity - _priorVelocity) / Time.deltaTime;
+            _currentForce = _joint.currentForce.magnitude;
 
             if (base.PartScript.CommandPod != null && _input != null && _joint != null)
             {
-
                 if (_bodyJoint != null && !_bodyJoint.PartConnection.IsDestroyed)
                 {
                     _joint.connectedBody.WakeUp();
@@ -78,12 +77,11 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                     float nextLength = Data.CurrentPosition + nextVelocity * Time.deltaTime;
                     nextLength = Mathf.Clamp(nextLength, 0f, Data.Length);
                     Data.CurrentPosition = nextLength;
-
                 }
-                Vector3 targetposition = new Vector3(Data.CurrentPosition - Data.Length / 2, 0f, 0f);
-                _joint.targetPosition = targetposition;
             }
 
+            Vector3 targetposition = new Vector3(Data.CurrentPosition - Data.Length / 2, 0f, 0f);
+            _joint.targetPosition = targetposition;
             _priorLength = Data.CurrentPosition;
             _priorVelocity = _currentVelocity;
 
