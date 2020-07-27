@@ -1,6 +1,7 @@
 namespace Assets.Scripts.Craft.Parts.Modifiers
 {
     using Assets.Scripts;
+    using Assets.Scripts.Ui.Inspector;
     using ModApi;
     using ModApi.Craft;
     using ModApi.Craft.Parts;
@@ -8,12 +9,24 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     using ModApi.Design;
     using ModApi.GameLoop;
     using ModApi.GameLoop.Interfaces;
+    using ModApi.Math;
+    using ModApi.Ui.Inspector;
     using System;
     using System.Collections.Generic;
     using UnityEngine;
 
     public class LinearActuatorScript : PartModifierScript<LinearActuatorData>, IDesignerUpdate, IGameLoopItem, IFlightStart, IFlightUpdate, IFlightFixedUpdate
     {
+        private PowerInfo powerInfo;
+
+        private float _priorVelocity;
+
+        private float _currentVelocity;
+
+        private float _currentAcceleration;
+
+        private float _currentForce;
+
         private float _priorLength;
 
         private float _lengthOffset;
@@ -48,31 +61,31 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             if (!_initializationComplete) { return; }
 
             Data.CurrentPosition = (ConnectedBodyLocalPosition() - _lengthOffset) - 0.5f;
-            Debug.Log($"{_joint}, {base.PartScript.CommandPod}, {_input}");
+            _currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
+            _currentAcceleration = (_currentVelocity - _priorVelocity) / Time.deltaTime;
 
-            if (base.PartScript.CommandPod == null || _input == null) { return; }
-
-            if (_joint != null)
+            if (base.PartScript.CommandPod != null && _input != null && _joint != null)
             {
+
                 if (_bodyJoint != null && !_bodyJoint.PartConnection.IsDestroyed)
                 {
-                    float currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
-
                     _joint.connectedBody.WakeUp();
                     _jointRigidbody.WakeUp();
 
                     float targetVelocity = Data.Velocity * _input.Value;
-                    float nextVelocity = currentVelocity + Data.Acceleration * Math.Sign(_input.Value) * Time.deltaTime;
+                    float nextVelocity = _currentVelocity + Data.Acceleration * Math.Sign(_input.Value) * Time.deltaTime;
                     nextVelocity = Mathf.Clamp(nextVelocity, -1 * Math.Abs(targetVelocity), Math.Abs(targetVelocity));
                     float nextLength = Data.CurrentPosition + nextVelocity * Time.deltaTime;
                     nextLength = Mathf.Clamp(nextLength, 0f, Data.Length);
-
-                    _priorLength = Data.CurrentPosition;
                     Data.CurrentPosition = nextLength;
+
                 }
-                Vector3 targetposition = new Vector3(Data.CurrentPosition - Data.Length/2, 0f, 0f);
+                Vector3 targetposition = new Vector3(Data.CurrentPosition - Data.Length / 2, 0f, 0f);
                 _joint.targetPosition = targetposition;
             }
+
+            _priorLength = Data.CurrentPosition;
+            _priorVelocity = _currentVelocity;
 
             if (_updatePistonShaft) { UpdateShaftExtension(); }
         }
@@ -80,8 +93,9 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         void IFlightStart.FlightStart(in FlightFrameData frame)
         {
             _input = GetInputController("Velocity");
+            powerInfo = new PowerInfo(_input, base.PartScript.BatteryFuelSource, Data.InputVolt, Data.MaxAmpere, Data.Resistance);
             FindAndSetupConnectionJoint();
-            _joint.anchor += Vector3.up * Data.Length/2;
+            _joint.anchor += Vector3.up * Data.Length / 2;
             _lengthOffset = ConnectedBodyOffset();
             _initializationComplete = true;
             UpdateShaftExtension();
@@ -102,6 +116,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                     FindAndSetupConnectionJoint();
                 }
             }
+            if (powerInfo != null) { powerInfo.UpdateBattery(base.PartScript.BatteryFuelSource); }
         }
 
         public override void OnSymmetry(SymmetryMode mode, IPartScript originalPart, bool created)
@@ -138,7 +153,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                             _updatePistonShaft = true;
 
                             SoftJointLimit _Linearlimit = new SoftJointLimit();
-                            _Linearlimit.limit = Data.Length/2;
+                            _Linearlimit.limit = Data.Length / 2;
                             _Linearlimit.bounciness = 0;
                             _Linearlimit.contactDistance = 0.001f;
 
@@ -179,6 +194,35 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             Vector3 position = base.PartScript.Transform.TransformPoint(base.PartScript.Data.AttachPoints[1].Position);
             position = _joint.connectedBody.transform.InverseTransformPoint(position);
             return position.magnitude;
+        }
+
+        private string GetActuatorInfo(string Label)
+        {
+            string result = null;
+            switch (Label)
+            {
+                case "Position":
+                    result = $"{Data.CurrentPosition:n2} m"; break;
+                case "Velocity":
+                    result = $"{_currentVelocity:n2} m/s"; break;
+                case "Acceleration":
+                    result = $"{_currentAcceleration:n2} m/s^2"; break;
+                case "Force":
+                    result = $"{Units.GetForceString(_currentForce)}"; break;
+            }
+            return result;
+        }
+
+        public override void OnGenerateInspectorModel(PartInspectorModel model)
+        {
+            powerInfo.AddPowerInfoModel(model);
+
+            var actuatorInfo = new GroupModel("Actuator Info");
+            actuatorInfo.Add(new TextModel("Position", () => GetActuatorInfo("Position")));
+            actuatorInfo.Add(new TextModel("Veclocity", () => GetActuatorInfo("Velocity")));
+            actuatorInfo.Add(new TextModel("Acceleration", () => GetActuatorInfo("Acceleration")));
+            actuatorInfo.Add(new TextModel("Force", () => GetActuatorInfo("Force")));
+            model.AddGroup(actuatorInfo);
         }
 
         private void UpdateShaftExtension()
