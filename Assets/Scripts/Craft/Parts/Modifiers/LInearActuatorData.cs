@@ -1,13 +1,11 @@
 namespace Assets.Scripts.Craft.Parts.Modifiers
 {
     using Assets.Scripts.Design;
-    using ModApi;
     using ModApi.Craft.Parts;
     using ModApi.Craft.Parts.Attributes;
     using ModApi.Design.PartProperties;
     using ModApi.Math;
     using System;
-    using System.Xml.Linq;
     using UnityEngine;
 
     [Serializable]

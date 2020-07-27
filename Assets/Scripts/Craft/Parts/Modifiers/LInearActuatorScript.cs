@@ -63,6 +63,8 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             _currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
             _currentAcceleration = (_currentVelocity - _priorVelocity) / Time.deltaTime;
             _currentForce = _joint.currentForce.magnitude;
+            _priorLength = Data.CurrentPosition;
+            _priorVelocity = _currentVelocity;
 
             if (base.PartScript.CommandPod != null && _input != null && _joint != null)
             {
@@ -82,8 +84,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
             Vector3 targetposition = new Vector3(Data.CurrentPosition - Data.Length / 2, 0f, 0f);
             _joint.targetPosition = targetposition;
-            _priorLength = Data.CurrentPosition;
-            _priorVelocity = _currentVelocity;
 
             if (_updatePistonShaft) { UpdateShaftExtension(); }
         }
