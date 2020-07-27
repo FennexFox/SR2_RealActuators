@@ -24,7 +24,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
         private float _currentAcceleration;
 
-        private float _currentForce;
+        private Vector3 _currentForce;
 
         private float _priorLength;
 
@@ -62,7 +62,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             Data.CurrentPosition = (ConnectedBodyLocalPosition() - _lengthOffset) - 0.5f;
             _currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
             _currentAcceleration = (_currentVelocity - _priorVelocity) / Time.deltaTime;
-            _currentForce = _joint.currentForce.magnitude;
+            _currentForce = _joint.currentForce + _currentAcceleration * _joint.connectedBody.mass * base.PartScript.Transform.TransformDirection(Vector3.up);
             _priorLength = Data.CurrentPosition;
             _priorVelocity = _currentVelocity;
 
@@ -204,9 +204,9 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                 case "Velocity":
                     result = $"{_currentVelocity:n2} m/s"; break;
                 case "Acceleration":
-                    result = $"{_currentAcceleration:n2} m/s^2"; break;
+                    result = $"{_currentAcceleration:n2} m/s2"; break;
                 case "Force":
-                    result = $"{Units.GetForceString(_currentForce)}"; break;
+                    result = $"{Units.GetForceString(_currentForce.magnitude)}"; break;
             }
             return result;
         }
