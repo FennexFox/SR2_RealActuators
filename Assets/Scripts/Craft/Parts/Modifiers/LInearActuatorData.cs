@@ -13,7 +13,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     [Serializable]
     [DesignerPartModifier("LinearActuator")]
     [PartModifierTypeId("RealActuators.LinearActuator")]
-    public class LinearActuatorData : PartModifierData<LinearActuatorScript>
+    public class LinearActuatorData : PartModifierData<LinearActuatorScript>, IPowerData
     {
         private const float DefaultLength = 0.4f;
 
@@ -45,11 +45,17 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         [DesignerPropertySlider(0.01f, 1f, 100, Label = "Velocity", Order = 1, Tooltip = "Change the operation velocity of the extender.")]
         private float _velocity = 1f;
 
-        public float CurrentPosition {get{return _currentPosition;} set{_currentPosition = value;}}
+        public float CurrentPosition { get { return _currentPosition; } set { _currentPosition = value; } }
 
         //public override float Mass => CalculateVolume() * 1550f * 0.01f;
 
         //public override int Price => (int)(15000f * Width);
+
+        public float InputVolt => 120f;
+
+        public float MaxAmpere => 1f;
+
+        public float Resistance => 1f;
 
         public float Length => _length;
 
@@ -58,12 +64,12 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         public float Acceleration => _acceleration;
 
         public float Velocity => _velocity;
-/*
-        public void UpdateScale()
-        {
-            base.Script.UpdateScale();
-        }
-*/
+        /*
+                public void UpdateScale()
+                {
+                    base.Script.UpdateScale();
+                }
+        */
         protected override void OnDesignerInitialization(IDesignerPartPropertiesModifierInterface d)
         {
             d.OnValueLabelRequested(() => _length, (float x) => x.ToString("0.00") + "m");
