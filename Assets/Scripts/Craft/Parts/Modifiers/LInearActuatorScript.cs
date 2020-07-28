@@ -2,7 +2,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 {
     using Assets.Scripts;
     using Assets.Scripts.Ui.Inspector;
-    using Assets.Scripts.Craft.FlightData;
     using ModApi;
     using ModApi.Craft;
     using ModApi.Craft.Parts;
@@ -69,7 +68,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             _currentAcceleration = (_currentVelocity - _priorVelocity) / Time.deltaTime;
             _currentForce = (_currentAcceleration * localUp) * _joint.connectedBody.mass + _joint.currentForce;
             if (!(Data.Length / 2 - Math.Abs(Data.CurrentPosition - Data.Length / 2) < 0.001f && Vector3.Angle(localUp * (Data.CurrentPosition - Data.Length / 2), flightData.GravityFrame) < 90))
-            { _currentForce -= Vector3.Project(flightData.GravityFrame, localUp) * _joint.connectedBody.mass; }
+            { _currentForce -= Vector3.Project(flightData.GravityFrame - flightData.AccelerationFrame, localUp) * _joint.connectedBody.mass; }
             _priorLength = Data.CurrentPosition;
             _priorVelocity = _currentVelocity;
 
