@@ -97,7 +97,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         void IFlightStart.FlightStart(in FlightFrameData frame)
         {
             _input = GetInputController("Velocity");
-            powerInfo = new PowerInfo(_input, base.PartScript.BatteryFuelSource, Data.InputVolt, Data.MaxAmpere, Data.Resistance);
+            powerInfo = new PowerInfo(Data.InputVolt, Data.MaxAmpere, Data.MaxAmpere * _input.Value, Data.Resistance);
             flightData = this.PartScript.CraftScript.FlightData;
             FindAndSetupConnectionJoint();
             _joint.anchor += _jointRigidbody.transform.InverseTransformVector(localUp * Data.Length / 2);
@@ -121,7 +121,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                     FindAndSetupConnectionJoint();
                 }
             }
-            if (powerInfo != null) { powerInfo.UpdateBattery(base.PartScript.BatteryFuelSource); }
         }
 
         public override void OnSymmetry(SymmetryMode mode, IPartScript originalPart, bool created)

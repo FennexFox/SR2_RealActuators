@@ -7,19 +7,13 @@ namespace Assets.Scripts.Ui.Inspector
 
     public class PowerInfo
     {
-        private IInputController _input;
-
-        private IFuelSource _battery;
-
         private float _inputVolt;
 
         private float _resistance;
 
         private float _maxAmpere;
 
-        public float InputAmpere => Math.Abs(_input.Value * _maxAmpere);
-
-        public float PowerConsumption => _inputVolt * InputAmpere / 1000f;
+        private float _currentAmpere;
 
         public void AddPowerInfoModel(PartInspectorModel model)
         {
@@ -39,32 +33,20 @@ namespace Assets.Scripts.Ui.Inspector
                 case "InpVolt":
                     result = $"{_inputVolt} V"; break;
                 case "IntVolt":
-                    result = $"{InputAmpere * _resistance:n0} V"; break;
+                    result = $"{_currentAmpere * _resistance:n0} V"; break;
                 case "Ampere":
-                    result = $"{InputAmpere:n0} A"; break;
+                    result = $"{_currentAmpere:n0} A"; break;
                 case "Watt":
-                    result = $"{PowerConsumption * 1000f:n0} W"; break;
+                    result = $"{_inputVolt * _currentAmpere:n0} W"; break;
             }
             return result;
         }
 
-        public void ConsumePower(float DeltaTime, IPartScript part)
+        public PowerInfo(float InputVolt, float MaxAmpere, float CurrentAmpere, float Resistance)
         {
-            if (!_battery.IsEmpty) { _battery.RemoveFuel(PowerConsumption * DeltaTime); }
-            else { part.Data.Activated = false; }
-        }
-
-        public void UpdateBattery(IFuelSource Battery)
-        {
-            _battery = Battery;
-        }
-
-        public PowerInfo(IInputController inputController, IFuelSource Battery, float InputVolt, float MaxAmpere, float Resistance)
-        {
-            _input = inputController;
-            _battery = Battery;
             _inputVolt = InputVolt;
             _maxAmpere = MaxAmpere;
+            _currentAmpere = CurrentAmpere;
             _resistance = Resistance;
         }
     }

@@ -11,7 +11,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     [Serializable]
     [DesignerPartModifier("LinearActuator")]
     [PartModifierTypeId("RealActuators.LinearActuator")]
-    public class LinearActuatorData : PartModifierData<LinearActuatorScript>, IPowerData
+    public class LinearActuatorData : PartModifierData<LinearActuatorScript>
     {
         private const float Density = 1550f; // ?
 
