@@ -2,6 +2,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 {
     using Assets.Scripts;
     using Assets.Scripts.Ui.Inspector;
+    using Assets.Scripts.Craft.FlightData;
     using ModApi;
     using ModApi.Craft;
     using ModApi.Craft.Parts;
@@ -17,6 +18,10 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     public class LinearActuatorScript : PartModifierScript<LinearActuatorData>, IDesignerUpdate, IGameLoopItem, IFlightStart, IFlightUpdate, IFlightFixedUpdate
     {
         private PowerInfo powerInfo;
+
+        private ICraftFlightData flightData;
+
+        private Vector3 localUp => base.PartScript.Transform.TransformDirection(Vector3.up);
 
         private float _priorVelocity;
 
@@ -62,7 +67,9 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             Data.CurrentPosition = (ConnectedBodyLocalPosition() - _lengthOffset) - 0.5f;
             _currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
             _currentAcceleration = (_currentVelocity - _priorVelocity) / Time.deltaTime;
-            _currentForce = _joint.currentForce + _currentAcceleration * _joint.connectedBody.mass * base.PartScript.Transform.TransformDirection(Vector3.up);
+            _currentForce = (_currentAcceleration * localUp) * _joint.connectedBody.mass + _joint.currentForce;
+            if (!(Data.Length / 2 - Math.Abs(Data.CurrentPosition - Data.Length / 2) < 0.001f && Vector3.Angle(localUp * (Data.CurrentPosition - Data.Length / 2), flightData.GravityFrame) < 90))
+            { _currentForce -= Vector3.Project(flightData.GravityFrame, localUp) * _joint.connectedBody.mass; }
             _priorLength = Data.CurrentPosition;
             _priorVelocity = _currentVelocity;
 
@@ -92,8 +99,9 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         {
             _input = GetInputController("Velocity");
             powerInfo = new PowerInfo(_input, base.PartScript.BatteryFuelSource, Data.InputVolt, Data.MaxAmpere, Data.Resistance);
+            flightData = this.PartScript.CraftScript.FlightData;
             FindAndSetupConnectionJoint();
-            _joint.anchor += Vector3.up * Data.Length / 2;
+            _joint.anchor += _jointRigidbody.transform.InverseTransformVector(localUp * Data.Length / 2);
             _lengthOffset = ConnectedBodyOffset();
             _initializationComplete = true;
             UpdateShaftExtension();
@@ -184,7 +192,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         {
             Vector3 position = _joint.connectedBody.position;
             position = this.PartScript.Transform.InverseTransformPoint(position);
-            return position.y;
+            return position.magnitude;
         }
 
         private float ConnectedBodyOffset()
