@@ -224,7 +224,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
             var actuatorInfo = new GroupModel("Actuator Info");
             actuatorInfo.Add(new TextModel("Position", () => GetActuatorInfo("Position")));
-            actuatorInfo.Add(new TextModel("Veclocity", () => GetActuatorInfo("Velocity")));
+            actuatorInfo.Add(new TextModel("Velocity", () => GetActuatorInfo("Velocity")));
             actuatorInfo.Add(new TextModel("Acceleration", () => GetActuatorInfo("Acceleration")));
             actuatorInfo.Add(new TextModel("Force", () => GetActuatorInfo("Force")));
             model.AddGroup(actuatorInfo);
