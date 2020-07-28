@@ -1,13 +1,11 @@
 namespace Assets.Scripts.Craft.Parts.Modifiers
 {
     using Assets.Scripts.Design;
-    using ModApi;
     using ModApi.Craft.Parts;
     using ModApi.Craft.Parts.Attributes;
     using ModApi.Design.PartProperties;
     using ModApi.Math;
     using System;
-    using System.Xml.Linq;
     using UnityEngine;
 
     [Serializable]
@@ -15,14 +13,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     [PartModifierTypeId("RealActuators.LinearActuator")]
     public class LinearActuatorData : PartModifierData<LinearActuatorScript>, IPowerData
     {
-        private const float DefaultLength = 0.4f;
-
-        private const float DefaultAcceleration = 1f;
-
-        private const float DefaultVelocity = 1f;
-
-        private const float DefaultForce = 10f;
-
         private const float Density = 1550f; // ?
 
         [SerializeField]
@@ -34,12 +24,12 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         private float _length = 0.4f;
 
         [SerializeField]
-        [DesignerPropertySlider(10f, 100f, 20, Label = "Force", Order = 1, Tooltip = "Change the maximum force of the extender.")]
+        [DesignerPropertySlider(10f, 400f, 40, Label = "Force", Order = 1, Tooltip = "Change the maximum force of the extender.")]
         private float _force = 10f;
 
         [SerializeField]
         [DesignerPropertySlider(1f, 200f, 200, Label = "Acceleration", Order = 1, Tooltip = "Change the acceleration of the extender.")]
-        private float _acceleration = 1f;
+        private float _acceleration = 200f;
 
         [SerializeField]
         [DesignerPropertySlider(0.01f, 1f, 100, Label = "Velocity", Order = 1, Tooltip = "Change the operation velocity of the extender.")]

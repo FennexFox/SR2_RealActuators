@@ -2,6 +2,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 {
     using Assets.Scripts;
     using Assets.Scripts.Ui.Inspector;
+    using Assets.Scripts.Craft.FlightData;
     using ModApi;
     using ModApi.Craft;
     using ModApi.Craft.Parts;
@@ -18,13 +19,17 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
     {
         private PowerInfo powerInfo;
 
+        private ICraftFlightData flightData;
+
+        private Vector3 localUp => base.PartScript.Transform.TransformDirection(Vector3.up);
+
         private float _priorVelocity;
 
         private float _currentVelocity;
 
         private float _currentAcceleration;
 
-        private float _currentForce;
+        private Vector3 _currentForce;
 
         private float _priorLength;
 
@@ -62,7 +67,11 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
             Data.CurrentPosition = (ConnectedBodyLocalPosition() - _lengthOffset) - 0.5f;
             _currentVelocity = (Data.CurrentPosition - _priorLength) / Time.deltaTime;
             _currentAcceleration = (_currentVelocity - _priorVelocity) / Time.deltaTime;
-            _currentForce = _joint.currentForce.magnitude;
+            _currentForce = (_currentAcceleration * localUp) * _joint.connectedBody.mass + _joint.currentForce;
+            if (!(Data.Length / 2 - Math.Abs(Data.CurrentPosition - Data.Length / 2) < 0.001f && Vector3.Angle(localUp * (Data.CurrentPosition - Data.Length / 2), flightData.GravityFrame) < 90))
+            { _currentForce -= Vector3.Project(flightData.GravityFrame, localUp) * _joint.connectedBody.mass; }
+            _priorLength = Data.CurrentPosition;
+            _priorVelocity = _currentVelocity;
 
             if (base.PartScript.CommandPod != null && _input != null && _joint != null)
             {
@@ -82,8 +91,6 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
 
             Vector3 targetposition = new Vector3(Data.CurrentPosition - Data.Length / 2, 0f, 0f);
             _joint.targetPosition = targetposition;
-            _priorLength = Data.CurrentPosition;
-            _priorVelocity = _currentVelocity;
 
             if (_updatePistonShaft) { UpdateShaftExtension(); }
         }
@@ -92,8 +99,9 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         {
             _input = GetInputController("Velocity");
             powerInfo = new PowerInfo(_input, base.PartScript.BatteryFuelSource, Data.InputVolt, Data.MaxAmpere, Data.Resistance);
+            flightData = this.PartScript.CraftScript.FlightData;
             FindAndSetupConnectionJoint();
-            _joint.anchor += Vector3.up * Data.Length / 2;
+            _joint.anchor += _jointRigidbody.transform.InverseTransformVector(localUp * Data.Length / 2);
             _lengthOffset = ConnectedBodyOffset();
             _initializationComplete = true;
             UpdateShaftExtension();
@@ -184,7 +192,7 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
         {
             Vector3 position = _joint.connectedBody.position;
             position = this.PartScript.Transform.InverseTransformPoint(position);
-            return position.y;
+            return position.magnitude;
         }
 
         private float ConnectedBodyOffset()
@@ -204,9 +212,9 @@ namespace Assets.Scripts.Craft.Parts.Modifiers
                 case "Velocity":
                     result = $"{_currentVelocity:n2} m/s"; break;
                 case "Acceleration":
-                    result = $"{_currentAcceleration:n2} m/s^2"; break;
+                    result = $"{_currentAcceleration:n2} m/s2"; break;
                 case "Force":
-                    result = $"{Units.GetForceString(_currentForce)}"; break;
+                    result = $"{Units.GetForceString(_currentForce.magnitude)}"; break;
             }
             return result;
         }
